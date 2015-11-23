@@ -34,10 +34,6 @@ public class AnimView extends FrameLayout {
         lp.topMargin = fromY * UseInfo.CARD_WIDTH;
         cardView.setLayoutParams(lp);
 
-        if (to.getNumber() <= 0) {
-            to.setVisibility(View.INVISIBLE);
-        }
-
         TranslateAnimation translateAnimation =
                 new TranslateAnimation(0,
                         UseInfo.CARD_WIDTH * (toX - fromX),
@@ -48,7 +44,9 @@ public class AnimView extends FrameLayout {
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-
+                if (to.getNumber() <= 0) {
+                    to.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
