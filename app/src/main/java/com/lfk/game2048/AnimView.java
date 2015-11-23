@@ -1,6 +1,7 @@
 package com.lfk.game2048;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -26,32 +27,38 @@ public class AnimView extends FrameLayout {
         card.startAnimation(scaleAnimation);
     }
 
+    public AnimView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     public void translateToCardAnim(final CardView from, final CardView to, int fromX, int fromY, int toX, int toY) {
         final CardView cardView = getCardView(from.getNumber());
 
         LayoutParams lp = new LayoutParams(UseInfo.CARD_WIDTH, UseInfo.CARD_HEIGHT);
         lp.leftMargin = fromX * UseInfo.CARD_WIDTH;
-        lp.topMargin = fromY * UseInfo.CARD_WIDTH;
+        lp.topMargin = fromY * UseInfo.CARD_HEIGHT;
         cardView.setLayoutParams(lp);
+
+        if (to.getNumber() <= 0) {
+            to.getNumberTextView().setVisibility(View.INVISIBLE);
+        }
 
         TranslateAnimation translateAnimation =
                 new TranslateAnimation(0,
                         UseInfo.CARD_WIDTH * (toX - fromX),
                         0,
                         UseInfo.CARD_HEIGHT * (toY - fromY));
-
+        
         translateAnimation.setDuration(100);
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                if (to.getNumber() <= 0) {
-                    to.setVisibility(View.INVISIBLE);
-                }
+
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                to.setVisibility(VISIBLE);
+                to.getNumberTextView().setVisibility(VISIBLE);
                 recycleCard(cardView);
             }
 

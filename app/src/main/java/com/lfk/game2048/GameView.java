@@ -38,7 +38,11 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         setOrientation(LinearLayout.VERTICAL);
         setBackgroundColor(getResources().getColor(R.color.color_background));
         setOnTouchListener(this);
-        animView = new AnimView(context);
+    }
+
+
+    public void setAnimView(AnimView animView) {
+        this.animView = animView;
     }
 
     @Override
@@ -214,11 +218,6 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
                             y--;
                             findIt = true;
                         } else if (cardViews[x][y].equals(cardViews[x][y_next].getNumber())) {
-                            animView.translateToCardAnim(
-                                    cardViews[x][y_next],
-                                    cardViews[x][y],
-                                    x, y_next,
-                                    x, y);
                             cardViews[x][y].setNumber(cardViews[x][y_next].getNumber() * 2);
                             cardViews[x][y_next].setNumber(0);
                             findIt = true;
@@ -240,21 +239,11 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
                 for (int y_next = y - 1; y_next >= 0; y_next--) {
                     if (cardViews[x][y_next].getNumber() > 0) {
                         if (cardViews[x][y].getNumber() <= 0) {
-                            animView.translateToCardAnim(
-                                    cardViews[x][y_next],
-                                    cardViews[x][y],
-                                    x, y_next,
-                                    x, y);
                             cardViews[x][y].setNumber(cardViews[x][y_next].getNumber());
                             cardViews[x][y_next].setNumber(0);
                             y++;
                             findIt = true;
                         } else if (cardViews[x][y].equals(cardViews[x][y_next].getNumber())) {
-                            animView.translateToCardAnim(
-                                    cardViews[x][y_next],
-                                    cardViews[x][y],
-                                    x, y_next,
-                                    x, y);
                             cardViews[x][y].setNumber(cardViews[x][y_next].getNumber() * 2);
                             cardViews[x][y_next].setNumber(0);
                             findIt = true;

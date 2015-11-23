@@ -3,10 +3,7 @@ package com.lfk.game2048;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -96,6 +93,9 @@ public class CardView extends FrameLayout {
         }
     }
 
+    public TextView getNumberTextView() {
+        return numberTextView;
+    }
 
     public int getNumber() {
         return number;

@@ -5,4 +5,19 @@
     android:layout_height="match_parent"
     tools:context="com.lfk.game2048.MainActivity">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.lfk.game2048.GameView
+            android:id="@+id/gameview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.lfk.game2048.AnimView
+            android:id="@+id/animview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
 </RelativeLayout>
