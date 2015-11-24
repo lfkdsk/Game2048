@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -352,24 +351,23 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
 
     private void complete() {
         boolean complete = true;
-        if (!cardPoints.isEmpty()) {
-            complete = false;
-        } else {
-            for (int y = 0; y < UseInfo.LINES; y++) {
-                for (int x = 0; x < UseInfo.LINES; x++) {
-                    Log.e("x", x + "");
-                    if ((x > 0 && cardViews[x][y].equals(cardViews[x - 1][y])) ||
-                            (x < UseInfo.LINES - 1 && cardViews[x][y].equals(cardViews[x + 1][y])) ||
-                            (y > 0 && cardViews[x][y].equals(cardViews[x][y - 1])) ||
-                            (y < UseInfo.LINES - 1 && cardViews[x][y].equals(cardViews[x][y + 1]))) {
-                        complete = false;
-                    }
+
+        for (int y = 0; y < UseInfo.LINES; y++) {
+            for (int x = 0; x < UseInfo.LINES; x++) {
+                if ((cardViews[x][y].getNumber() == 0) ||
+                        (x > 0 && cardViews[x][y].equals(cardViews[x - 1][y])) ||
+                        (x < UseInfo.LINES - 1 && cardViews[x][y].equals(cardViews[x + 1][y])) ||
+                        (y > 0 && cardViews[x][y].equals(cardViews[x][y - 1])) ||
+                        (y < UseInfo.LINES - 1 && cardViews[x][y].equals(cardViews[x][y + 1]))) {
+                    complete = false;
                 }
             }
         }
 
         if (complete) {
-
+            Intent intent = new Intent();
+            intent.setAction("END");
+            context.sendBroadcast(intent);
         }
     }
 }
