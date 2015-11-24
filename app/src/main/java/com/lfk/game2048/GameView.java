@@ -1,11 +1,16 @@
 package com.lfk.game2048;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
+
+import com.lfk.game2048.Info.UseInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +21,14 @@ import java.util.List;
 public class GameView extends LinearLayout implements View.OnTouchListener {
     // 初始 / 偏移
     private float startX, startY, offsetX, offsetY;
+    // 手指移动阀值
     private final int OFFSET_MAX = 5;
     private Context context;
+    // 存储所有的卡片
     private CardView[][] cardViews = new CardView[UseInfo.LINES][UseInfo.LINES];
+    // 用于标注空的卡片位置
     private List<Point> cardPoints = new ArrayList<>();
+    // 用于展示动画
     private AnimView animView;
 
     public GameView(Context context) {
@@ -73,15 +82,33 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         return true;
     }
 
+    /**
+     * 测量尺寸
+     *
+     * @param w
+     * @param h
+     * @param oldw
+     * @param oldh
+     */
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         UseInfo.CARD_WIDTH = UseInfo.CARD_HEIGHT
                 = (Math.min(w, h) - 10) / UseInfo.LINES;
         addCards(UseInfo.CARD_WIDTH, UseInfo.CARD_HEIGHT);
+//        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(w,
+//                UseInfo.CARD_WIDTH * UseInfo.LINES + 10);
+//        this.setLayoutParams(params);
+//        animView.setLayoutParams(params);
         startGame();
     }
 
+    /**
+     * 添加卡片
+     *
+     * @param cardWidth
+     * @param cardHeight
+     */
     private void addCards(int cardWidth, int cardHeight) {
         CardView cardView;
         LinearLayout line;
@@ -101,15 +128,24 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         }
     }
 
-    private void startGame() {
+    /**
+     * 开始游戏
+     */
+    public void startGame() {
         for (int y = 0; y < UseInfo.LINES; y++) {
             for (int x = 0; x < UseInfo.LINES; x++) {
                 cardViews[x][y].setNumber(0);
             }
         }
         addRandom(2);
+        UseInfo.SCORE = 0;
     }
 
+    /**
+     * 随机生成卡片
+     *
+     * @param num 生成数量
+     */
     private void addRandom(int num) {
         for (int i = 0; i < num; i++) {
             cardPoints.clear();
@@ -128,6 +164,9 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         }
     }
 
+    /**
+     * 四个方向的手势
+     */
     private void swipeLeft() {
         boolean findIt = false;
         for (int y = 0; y < UseInfo.LINES; y++) {
@@ -150,6 +189,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
                                     cardViews[x][y],
                                     x_next, y,
                                     x, y);
+                            addScore(cardViews[x_next][y].getNumber());
                             cardViews[x][y].setNumber(cardViews[x_next][y].getNumber() * 2);
                             cardViews[x_next][y].setNumber(0);
                             findIt = true;
@@ -161,6 +201,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         }
         if (findIt) {
             addRandom(1);
+            complete();
         }
     }
 
@@ -187,6 +228,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
                                     cardViews[x][y],
                                     x_next, y,
                                     x, y);
+                            addScore(cardViews[x_next][y].getNumber());
                             cardViews[x][y].setNumber(cardViews[x_next][y].getNumber() * 2);
                             cardViews[x_next][y].setNumber(0);
                             findIt = true;
@@ -198,6 +240,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         }
         if (findIt) {
             addRandom(1);
+            complete();
         }
     }
 
@@ -218,6 +261,12 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
                             y--;
                             findIt = true;
                         } else if (cardViews[x][y].equals(cardViews[x][y_next].getNumber())) {
+                            animView.translateToCardAnim(
+                                    cardViews[x][y_next],
+                                    cardViews[x][y],
+                                    x, y_next,
+                                    x, y);
+                            addScore(cardViews[x][y_next].getNumber());
                             cardViews[x][y].setNumber(cardViews[x][y_next].getNumber() * 2);
                             cardViews[x][y_next].setNumber(0);
                             findIt = true;
@@ -229,6 +278,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         }
         if (findIt) {
             addRandom(1);
+            complete();
         }
     }
 
@@ -239,11 +289,22 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
                 for (int y_next = y - 1; y_next >= 0; y_next--) {
                     if (cardViews[x][y_next].getNumber() > 0) {
                         if (cardViews[x][y].getNumber() <= 0) {
+                            animView.translateToCardAnim(
+                                    cardViews[x][y_next],
+                                    cardViews[x][y],
+                                    x, y_next,
+                                    x, y);
                             cardViews[x][y].setNumber(cardViews[x][y_next].getNumber());
                             cardViews[x][y_next].setNumber(0);
                             y++;
                             findIt = true;
                         } else if (cardViews[x][y].equals(cardViews[x][y_next].getNumber())) {
+                            animView.translateToCardAnim(
+                                    cardViews[x][y_next],
+                                    cardViews[x][y],
+                                    x, y_next,
+                                    x, y);
+                            addScore(cardViews[x][y_next].getNumber());
                             cardViews[x][y].setNumber(cardViews[x][y_next].getNumber() * 2);
                             cardViews[x][y_next].setNumber(0);
                             findIt = true;
@@ -255,7 +316,60 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         }
         if (findIt) {
             addRandom(1);
+            complete();
         }
     }
 
+    /**
+     * 计算空间大小
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        int w = manager.getDefaultDisplay().getWidth();
+        int h = manager.getDefaultDisplay().getWidth();
+        UseInfo.CARD_WIDTH = UseInfo.CARD_HEIGHT
+                = (Math.min(w, h) - 20) / UseInfo.LINES;
+        setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES + 20,
+                UseInfo.CARD_WIDTH * UseInfo.LINES + 20);
+    }
+
+    /**
+     * 用广播更新分数
+     *
+     * @param num
+     */
+    private void addScore(int num) {
+        UseInfo.addScore(num);
+        Intent intent = new Intent();
+        intent.setAction("REFRESH");
+        context.sendBroadcast(intent);
+    }
+
+    private void complete() {
+        boolean complete = true;
+        if (!cardPoints.isEmpty()) {
+            complete = false;
+        } else {
+            for (int y = 0; y < UseInfo.LINES; y++) {
+                for (int x = 0; x < UseInfo.LINES; x++) {
+                    Log.e("x", x + "");
+                    if ((x > 0 && cardViews[x][y].equals(cardViews[x - 1][y])) ||
+                            (x < UseInfo.LINES - 1 && cardViews[x][y].equals(cardViews[x + 1][y])) ||
+                            (y > 0 && cardViews[x][y].equals(cardViews[x][y - 1])) ||
+                            (y < UseInfo.LINES - 1 && cardViews[x][y].equals(cardViews[x][y + 1]))) {
+                        complete = false;
+                    }
+                }
+            }
+        }
+
+        if (complete) {
+
+        }
+    }
 }

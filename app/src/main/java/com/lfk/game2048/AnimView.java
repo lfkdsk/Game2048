@@ -8,6 +8,8 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 
+import com.lfk.game2048.Info.UseInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class AnimView extends FrameLayout {
                         UseInfo.CARD_WIDTH * (toX - fromX),
                         0,
                         UseInfo.CARD_HEIGHT * (toY - fromY));
-        
+
         translateAnimation.setDuration(100);
         translateAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -87,5 +89,12 @@ public class AnimView extends FrameLayout {
         card.setVisibility(View.VISIBLE);
         card.setNumber(number);
         return card;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES + 20,
+                UseInfo.CARD_WIDTH * UseInfo.LINES + 20);
     }
 }
