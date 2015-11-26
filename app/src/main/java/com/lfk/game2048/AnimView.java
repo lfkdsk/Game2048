@@ -94,7 +94,7 @@ public class AnimView extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES + 20,
-                UseInfo.CARD_WIDTH * UseInfo.LINES + 20);
+        setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES,
+                UseInfo.CARD_WIDTH * UseInfo.LINES);
     }
 }

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.lfk.game2048.Info.UseInfo;
 
@@ -92,8 +94,8 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        UseInfo.CARD_WIDTH = UseInfo.CARD_HEIGHT
-                = (Math.min(w, h) - 10) / UseInfo.LINES;
+//        UseInfo.CARD_WIDTH = UseInfo.CARD_HEIGHT
+//                = (Math.min(w, h) - 10) / UseInfo.LINES;
         addCards(UseInfo.CARD_WIDTH, UseInfo.CARD_HEIGHT);
 //        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(w,
 //                UseInfo.CARD_WIDTH * UseInfo.LINES + 10);
@@ -329,12 +331,14 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int w = manager.getDefaultDisplay().getWidth();
+        int w = manager.getDefaultDisplay().getHeight();
         int h = manager.getDefaultDisplay().getWidth();
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_main, null);
+        RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.gameBar);
         UseInfo.CARD_WIDTH = UseInfo.CARD_HEIGHT
-                = (Math.min(w, h) - 20) / UseInfo.LINES;
-        setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES + 20,
-                UseInfo.CARD_WIDTH * UseInfo.LINES + 20);
+                = (Math.min(w, h) - layout.getHeight() - 10) / UseInfo.LINES;
+        setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES + 10,
+                UseInfo.CARD_WIDTH * UseInfo.LINES+10);
     }
 
     /**
