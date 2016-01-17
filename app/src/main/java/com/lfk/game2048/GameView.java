@@ -338,7 +338,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
         UseInfo.CARD_WIDTH = UseInfo.CARD_HEIGHT
                 = (Math.min(w, h) - layout.getHeight() - 10) / UseInfo.LINES;
         setMeasuredDimension(UseInfo.CARD_WIDTH * UseInfo.LINES + 10,
-                UseInfo.CARD_WIDTH * UseInfo.LINES+10);
+                UseInfo.CARD_WIDTH * UseInfo.LINES + 10);
     }
 
     /**
@@ -355,7 +355,6 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
 
     private void complete() {
         boolean complete = true;
-
         for (int y = 0; y < UseInfo.LINES; y++) {
             for (int x = 0; x < UseInfo.LINES; x++) {
                 if ((cardViews[x][y].getNumber() == 0) ||
@@ -373,5 +372,7 @@ public class GameView extends LinearLayout implements View.OnTouchListener {
             intent.setAction("END");
             context.sendBroadcast(intent);
         }
+
     }
+
 }
